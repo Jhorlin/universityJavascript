@@ -4,8 +4,11 @@
 (function (document, React, Rx, Promise, draw) {
     "use strict";
 
-    var boardOffset = 160;
+    var boardOffset = 160
+
+    //Chalk board component
     var Board = React.createClass({
+        //set the initial state
         getInitialState: function () {
             return {
                 height: document.body.clientHeight,
@@ -45,8 +48,9 @@
                     });
                 };
 
-
+            //watch for update to our domain object
             draw.observable.subscribe(function (paths) {
+                //set the state for rendering
                 self.setState({
                     paths: paths,
                     height: self.state.height,
@@ -69,6 +73,7 @@
 
         },
         render: function () {
+            //Render our lines
             var style = {
                     height: this.state.height - boardOffset,
                     width: this.state.width - 2,
@@ -88,6 +93,7 @@
         }
     })
 
+    //draw a line
     var Line = React.createClass({
         render: function () {
             var points = 'M ' + this.props.points.join(' L ');
@@ -95,6 +101,7 @@
         }
     })
 
+    //bootstrap the element
     React.render(
         <Board />,
         document.getElementById('boardContainer')
