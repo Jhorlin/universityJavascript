@@ -1,7 +1,8 @@
 /**
  * Created by jhorlin.dearmas on 6/9/2015.
  */
-(function (document, React, Rx) {
+(function (document, React, Rx, draw) {
+    var boardOffset = 160;
     var Board = React.createClass({
         getInitialState: function () {
             return {
@@ -33,14 +34,11 @@
                     .map(preventDefault)
                     .filter(leftMouseButton)
                     .filter(function (e) {
-                        console.log('filtering');
                         return e.which === 1;
                     }).map(function (e) {
-                        console.log('mapping');
-                        return [e.clientX, e.clientY].join(' ')
+                        return [e.clientX, e.clientY - boardOffset].join(' ')
                     }),
                 mouseMoveSubscriber = function (point) {
-                    console.log('setting state');
                     path.points.push(point);
                     self.setState({
                         paths: paths,
@@ -51,7 +49,7 @@
 
             mouseDownSource.subscribe(function (e) {
                 path = {
-                    color: 'blue',
+                    color: draw.color,
                     points: []
                 };
                 paths.push(path);
@@ -71,7 +69,7 @@
         },
         render: function () {
             var style = {
-                    height: this.state.height - 160,
+                    height: this.state.height - boardOffset,
                     width: this.state.width - 2,
                     position: 'absolute',
                     border: '1px solid blue',
@@ -86,8 +84,8 @@
 
     var Line = React.createClass({
         render: function () {
-            var points = 'M ' + this.props.points.join(' L ') + 'z';
-            return (<path className="line" strokeWidth="3" stroke={this.props.color} d={points} />)
+            var points = 'M ' + this.props.points.join(' L ');
+            return (<path fill="none" className="line" strokeWidth="3" stroke={this.props.color} d={points} />)
         }
     })
 
@@ -95,4 +93,4 @@
         <Board />,
         document.getElementById('boardContainer')
     );
-}(document, this.React, this.Rx))
+}(document, this.React, this.Rx, this.draw))
