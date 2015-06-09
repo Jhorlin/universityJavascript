@@ -5,24 +5,25 @@
     var HeatMap = React.createClass({
         handleResize: function () {
             var self = this;
-            if (this.timeout) {
-                window.clearTimeout(this.timeout);
-                this.timeout = null;
-            }
-            this.timeout = window.setTimeout(function () {
+            //if (this.timeout) {
+            //    window.clearTimeout(this.timeout);
+            //    this.timeout = null;
+            //}
+            //this.timeout = window.setTimeout(function () {
                 self.setState({
                     height: document.body.clientHeight,
                     width: document.body.clientWidth,
                     interactions: self.state.interactions
                 });
-            }, 3000)
+           // }, 0)
 
         },
         handleInteraction: function (e) {
             this.state.interactions.push(e);
+            debugger;
             this.setState({
-                height: this.state.clientHeight,
-                width: this.state.clientWidth,
+                height: this.state.height,
+                width: this.state.width,
                 interactions: this.state.interactions
             })
         },
@@ -48,7 +49,7 @@
                     width: this.state.width
                 },
                 heatPoints = this.state.interactions.map(function (interaction, index) {
-                    return (<Heat x={interaction.clientX} y={interaction.clientY} key={index}/>);
+                    return (<Heat interaction={interaction} container={style} key={index}/>);
                 })
             return (
                 <svg height={this.state.height} width={this.state.width} style={style}
@@ -58,10 +59,12 @@
     });
 
     var Heat = React.createClass({
+
         render: function () {
-            return (<g stroke="green" fill="white" stroke-width="5">
-                <circle cx={this.props.x} cy={this.props.y} r="15"/>
-            </g>)
+            var xPct = (this.props.container.x / this.props.clientX) + '%',
+                yPct = (this.props.container.y / this.props.clientY) + '%';
+            debugger;
+            return (<circle fill="blue" fillOpacity="0.1" cx={xPct} cy={yPct} r="5"/>)
         }
     })
 
