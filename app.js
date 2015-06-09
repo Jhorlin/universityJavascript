@@ -10,6 +10,8 @@
         httpProxy = require('http-proxy'),
         proxy = httpProxy.createProxyServer({}),
         harmon = require('harmon'),
+        enrich = require('./lib/enrich'),
+        enrichmentHandler = harmon([], [enrich]),
         app = express();
 
     env(path.join(__dirname, '.env'));
@@ -24,13 +26,12 @@
     app.use('/components', express.static(path.join(__dirname, 'components')));
     app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
-    app.use(function(req, res, next){
+    app.use(enrichmentHandler);
+
+    app.use(function (req, res, next) {
         proxy.web(req, res, {target: target}, function(err){
             console.log(err.message);
         })
     });
-
-
-
 
 }())
