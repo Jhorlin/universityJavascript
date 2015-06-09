@@ -55,7 +55,7 @@
             })
 
             mouseDownSource.subscribe(function (e) {
-                pathPromise = draw.addPath(path = {
+                pathPromise = draw.addPath({
                     color: draw.color,
                     points: []
                 });
@@ -76,9 +76,14 @@
                     border: '1px solid blue',
                     left: 0
                 },
-                lines = this.state.paths.map(function (path, id) {
-                    return (<Line key={id} color={path.color} points={path.points}/>)
-                });
+                lines = this.state.paths
+                    .filter(function (path) {
+                        debugger;
+                        return path.points.length;
+                    })
+                    .map(function (path, id) {
+                        return (<Line key={id} color={path.color} points={path.points}/>)
+                    });
             return (<svg className="board" style={style}>{lines}</svg>)
         }
     })
