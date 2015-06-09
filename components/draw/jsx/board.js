@@ -1,7 +1,9 @@
 /**
  * Created by jhorlin.dearmas on 6/9/2015.
  */
-(function (document, React, Rx, draw) {
+(function (document, React, Rx, Promise, draw) {
+    "use strict";
+
     var boardOffset = 160;
     var Board = React.createClass({
         getInitialState: function () {
@@ -13,13 +15,12 @@
         },
         componentDidMount: function () {
             var self = this,
-                paths = [],
-                path,
+                pathPromise,
                 subscription,
-                node = React.findDOMNode(this)
-            leftMouseButton = function (e) {
-                return e.which === 1;
-            },
+                node = React.findDOMNode(this),
+                leftMouseButton = function (e) {
+                    return e.which === 1;
+                },
                 preventDefault = function (e) {
                     e.preventDefault;
                     return e;
@@ -39,33 +40,33 @@
                         return [e.clientX, e.clientY - boardOffset].join(' ')
                     }),
                 mouseMoveSubscriber = function (point) {
-                    path.points.push(point);
-                    self.setState({
-                        paths: paths,
-                        height: self.state.height,
-                        width: self.state.width
+                    pathPromise.then(function (index) {
+                        draw.addPoint(index, point);
                     });
                 };
 
+
+            draw.observable.subscribe(function (paths) {
+                self.setState({
+                    paths: paths,
+                    height: self.state.height,
+                    width: self.state.width
+                });
+            })
+
             mouseDownSource.subscribe(function (e) {
-                path = {
+                pathPromise = draw.addPath(path = {
                     color: draw.color,
                     points: []
-                };
-                paths.push(path);
-                console.log('setting subscriptions');
+                });
                 subscription = mouseMoveSource.subscribe(mouseMoveSubscriber);
             });
 
             mouseUpSource.subscribe(function () {
-                console.log('removing subscriptions')
+                pathPromise = null;
                 subscription.dispose();
-                path = null;
             });
 
-        },
-        mousemoveHandler:function(){
-            console.log('fucking move');
         },
         render: function () {
             var style = {
@@ -85,7 +86,7 @@
     var Line = React.createClass({
         render: function () {
             var points = 'M ' + this.props.points.join(' L ');
-            return (<path fill="none" className="line" strokeWidth="3" stroke={this.props.color} d={points} />)
+            return (<path fill="none" className="line" strokeWidth="3" stroke={this.props.color} d={points}/>)
         }
     })
 
@@ -93,4 +94,4 @@
         <Board />,
         document.getElementById('boardContainer')
     );
-}(document, this.React, this.Rx, this.draw))
+}(document, this.React, this.Rx, this.Promise, this.draw))

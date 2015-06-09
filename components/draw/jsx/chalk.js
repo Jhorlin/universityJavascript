@@ -2,6 +2,8 @@
  * Created by jhorlin.dearmas on 6/9/2015.
  */
 (function (document, React, draw) {
+    "use strict";
+
     var colorOptions = ['#ed7777', '#fad48b', '#f5f9ad', '#bcdf8a', '#94c0cc', '#f6f4f1'],
         radius = 20;
     draw.color = colorOptions[0];

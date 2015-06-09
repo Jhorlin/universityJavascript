@@ -34,18 +34,27 @@
     });
 
 
-    var paths =[];
+    var paths = [];
 
-    io.on('connection', function(socket){
+    io.on('connection', function (socket) {
         socket.emit('paths', paths);
-        socket.on('path', function(path, fn){
-            var length = path.length;
+        socket.on('path', function (path, fn) {
+            var index = paths.length;
             paths.push(path);
-            fn(length);
+            io.emit('path', {
+                index: index,
+                path: path
+            });
+            fn(index);
         })
-        socket.on('point', function(pointPayload){
-            paths[pointPayload.index].push(pointPayload.point);
-            io.emit('point', pointPayload);
+        socket.on('point', function (pointPayload) {
+            var index = paths[pointPayload.index].points.length;
+                paths[pointPayload.index].points.push(pointPayload.point);
+            io.emit('point', {
+                point:pointPayload.point,
+                pointIndex:index,
+                pathIndex:pointPayload.index
+            });
         })
     })
 
