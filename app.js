@@ -9,6 +9,7 @@
         path = require('path'),
         httpProxy = require('http-proxy'),
         proxy = httpProxy.createProxyServer({}),
+        harmon = require('harmon'),
         app = express();
 
     env(path.join(__dirname, '.env'));
@@ -20,11 +21,16 @@
         console.log('listening on port %s', port);
     });
 
+    app.use('/components', express.static(path.join(__dirname, 'components')));
+    app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
+
     app.use(function(req, res, next){
         proxy.web(req, res, {target: target}, function(err){
             console.log(err.message);
         })
     });
+
+
 
 
 }())
