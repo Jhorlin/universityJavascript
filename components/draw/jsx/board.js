@@ -25,7 +25,7 @@
                     return e.which === 1;
                 },
                 preventDefault = function (e) {
-                    e.preventDefault;
+                    e.preventDefault();
                     return e;
                 },
                 mouseDownSource = Rx.Observable.fromEvent(node, 'mousedown')
@@ -37,9 +37,7 @@
                 mouseMoveSource = Rx.Observable.fromEvent(node, 'mousemove')
                     .map(preventDefault)
                     .filter(leftMouseButton)
-                    .filter(function (e) {
-                        return e.which === 1;
-                    }).map(function (e) {
+                    .map(function (e) {
                         return [e.clientX, e.clientY - boardOffset].join(' ')
                     }),
                 mouseMoveSubscriber = function (point) {
@@ -83,7 +81,6 @@
                 },
                 lines = this.state.paths
                     .filter(function (path) {
-                        debugger;
                         return path.points.length;
                     })
                     .map(function (path, id) {

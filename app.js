@@ -12,7 +12,6 @@
         server = require('http').Server(app),
         io = require('socket.io')(server);
 
-
     env(path.join(__dirname, '.env'));
 
     var port = process.env.PORT;
@@ -24,6 +23,7 @@
     app.use('/components', express.static(path.join(__dirname, 'components')));
     app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
+    //render any html view
     app.get('/:view', function (req, res, next) {
         res.setHeader('content-type', 'text/html');
         var stream = fs.createReadStream(path.join(__dirname, 'views/' + req.params.view + '.html'));
@@ -37,6 +37,7 @@
     var paths = [];
 
     io.on('connection', function (socket) {
+        //on connection emit the domain object
         socket.emit('paths', paths);
         socket.on('path', function (path, fn) {
             var index = paths.length;
@@ -45,6 +46,7 @@
                 index: index,
                 path: path
             });
+            //set the index of the path we should be adding to
             fn(index);
         })
         socket.on('point', function (pointPayload) {

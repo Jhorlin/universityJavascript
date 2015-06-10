@@ -26,9 +26,9 @@
             var chalks = colorOptions.map(function (color, index) {
                 var yOffset = radius,
                     xOffset = (radius * 2) + 5,
-                    xPosotion = xOffset * (index + 1);
+                    xPosition = xOffset * (index + 1);
                 return (<Chalk select={self.select} selected={color === self.state.selected} color={color} y={yOffset}
-                               x={xPosotion} key={index}/>)
+                               x={xPosition} key={index}/>)
             })
             return (<svg className="Palette">{chalks}</svg>);
         }
